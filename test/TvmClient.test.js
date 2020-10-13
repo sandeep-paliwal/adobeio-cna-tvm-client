@@ -249,7 +249,7 @@ describe('getAzurePresignCredentials', () => {
   })
 })
 
-describe('revokeAzureBlobPresignCredentials', () => {
+describe('revokePresignURLs', () => {
   const fetchTvmPresignLog = 'successfully revoked presign credentials from tvm'
 
   test('when tvm response is valid', async () => {
@@ -257,7 +257,7 @@ describe('revokeAzureBlobPresignCredentials', () => {
     fetch.mockResolvedValue(wrapInFetchResponse(fakeAzureTVMPresignResponse))
     fakeTVMInput.cacheFile = false
     const tvmClient = await TvmClient.init(fakeTVMInput)
-    const creds = await tvmClient.revokeAzureBlobPresignCredentials()
+    const creds = await tvmClient.revokePresignURLs()
     expect(creds).toEqual(fakeAzureTVMPresignResponse)
     // calls with namespace as path arg
     expect(fetch.mock.calls[0][0].toString()).toEqual(TvmClient.DefaultApiHost + '/' +
@@ -271,7 +271,7 @@ describe('revokeAzureBlobPresignCredentials', () => {
     fetch.mockResolvedValue(wrapInFetchError(400))
     fakeTVMInput.cacheFile = false
     const tvmClient = await TvmClient.init(fakeTVMInput)
-    await expect(tvmClient.revokeAzureBlobPresignCredentials()).rejects.toThrow('[TvmLib:ERROR_RESPONSE] Error response from TVM server with status code: 400')
+    await expect(tvmClient.revokePresignURLs()).rejects.toThrow('[TvmLib:ERROR_RESPONSE] Error response from TVM server with status code: 400')
     expect(mockLogError).toHaveBeenCalledWith(expect.stringContaining(fakeTVMInput.ow.namespace))
     expect(mockLogError).toHaveBeenCalledWith(expect.not.stringContaining(fakeTVMInput.ow.auth))
   })
@@ -280,7 +280,7 @@ describe('revokeAzureBlobPresignCredentials', () => {
     fetch.mockResolvedValue(wrapInFetchError(401))
     fakeTVMInput.cacheFile = false
     const tvmClient = await TvmClient.init(fakeTVMInput)
-    await expect(tvmClient.revokeAzureBlobPresignCredentials()).rejects.toThrow('[TvmLib:ERROR_RESPONSE] Error response from TVM server with status code: 401')
+    await expect(tvmClient.revokePresignURLs()).rejects.toThrow('[TvmLib:ERROR_RESPONSE] Error response from TVM server with status code: 401')
     expect(mockLogError).toHaveBeenCalledWith(expect.stringContaining(fakeTVMInput.ow.namespace))
     expect(mockLogError).toHaveBeenCalledWith(expect.not.stringContaining(fakeTVMInput.ow.auth))
   })
